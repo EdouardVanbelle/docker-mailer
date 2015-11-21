@@ -5,11 +5,13 @@ MAINTAINER edouard@vanbelle.fr
 RUN \
 	apt-get update && \
 	apt-get install -y \
-		postfix \
-		dovecot-common dovecot-imapd dovecot-sqlite \
-		openssl opendkim opendkim-tools 
-#	groupadd -g 5000 vmail && \
-#	useradd -g vmail -u 5000 vmail -d /home/vmail -m && \
+		postfix opendkim opendkim-tools \
+		openssl rsyslog \
+		dovecot-common dovecot-imapd dovecot-sqlite 
+
+# TODO: Squash it
+RUN	groupadd -g 5000 vmail && \
+	useradd -g vmail -u 5000 vmail -d /home/vmail -m 
 #	chgrp vmail /etc/dovecot/dovecot.conf && \
 #	chmod g+r /etc/dovecot/dovecot.conf
 
