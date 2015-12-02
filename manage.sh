@@ -434,7 +434,7 @@ _init()
 _run()
 {
 	_init
-	tail -F /var/log/mail.log
+	tail -F /var/log/message
 }
 
 shell()

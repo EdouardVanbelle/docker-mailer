@@ -21,6 +21,7 @@ RUN	mkdir /data && \
 
 ADD manage.sh /manage.sh
 
+ADD etc/rsyslog.conf		/etc/rsyslog.conf
 ADD etc/opendkim.conf 		/etc/opendkim.conf
 ADD etc/default 		/etc/default
 ADD etc/default/spamassassin 	/etc/default/spamassassin

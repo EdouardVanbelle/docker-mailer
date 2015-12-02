@@ -1,0 +1,6 @@
+enhance checks:
+
+	ADSP: _adsp._domainkey TXT "dkim=all"
+add:
+	DMARC
+

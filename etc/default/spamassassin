@@ -19,7 +19,7 @@ ENABLED=1
 
 #SPAMD_HOME="/home/spamd/"
 #--helper-home-dir ${SPAMD_HOME}
-OPTIONS="--create-prefs --max-children 5 --username spamd --helper-home-dir /var/lib/spamassassin -s mail" 
+OPTIONS="--create-prefs --max-children 5 --username nobody --helper-home-dir /var/lib/spamassassin -s daemon --syslog-socket native"
 # Pid file
 # Where should spamd write its PID to file? If you use the -u or
 # --username option above, this needs to be writable by that user.
