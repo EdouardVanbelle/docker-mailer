@@ -4,30 +4,41 @@ MAINTAINER edouard@vanbelle.fr
 
 RUN \
 	apt-get update && \
-	apt-get install -y \
-		postfix opendkim opendkim-tools \
+	DEBIAN_FRONTEND=noninteractive apt-get install -q -y \
 		openssl rsyslog \
-		dovecot-common dovecot-imapd dovecot-sqlite 
+		postfix opendkim opendkim-tools postfix-policyd-spf-python \
+		spamassassin spamc \
+		dovecot-common dovecot-imapd dovecot-sqlite dovecot-sieve dovecot-managesieved \
+	&& apt-get clean \
+	&& rm -rf /var/lib/apt/lists/*
 
 # TODO: Squash it
-RUN	groupadd -g 5000 vmail && \
-	useradd -g vmail -u 5000 vmail -d /home/vmail -m 
-#	chgrp vmail /etc/dovecot/dovecot.conf && \
-#	chmod g+r /etc/dovecot/dovecot.conf
+RUN	mkdir /data && \
+	groupadd -g 5000 vmail && \
+	useradd -g vmail -u 5000 vmail -d /data/vmail -m && \
+	echo my-mailer > /etc/mailname && \
+	echo 127.0.0.1 my-mailer >>/etc/hosts
 
-# TODO: check for clamav / spamassassin ? / bogofilter ?
+ADD manage.sh /manage.sh
 
-#ADD postfix /etc/postfix
-
-ADD start.sh /start.sh
+ADD etc/opendkim.conf 		/etc/opendkim.conf
+ADD etc/default 		/etc/default
+ADD etc/default/spamassassin 	/etc/default/spamassassin
+ADD etc/postfix/main.cf 	/etc/postfix/main.cf
+ADD etc/postfix/master.cf 	/etc/postfix/master.cf
+ADD etc/dovecot/etc/ 		/etc/dovecot/etc/
 
 # mails should be at least persistant...
-VOLUME /home/vmail
+VOLUME /data
 
 # XXX take care that temp files like pending mails will be in /var/...
+# TODO simplify logs (no need to polluate too much /var/log/mail.* & /var/log/messages)
 
-# SMTP & IMAP ports
-EXPOSE 25 587 143 995 993
+# SMTP SUBMISSION IMAP MANAGESIEVE
+EXPOSE 25 587 143 4190
+# XXX: no need to open SSL (TLS is forced): 995 993
 
-# go
-CMD /start.sh
+# by default call: /manage.sh run
+
+ENTRYPOINT [ "/manage.sh", "_run" ]
+

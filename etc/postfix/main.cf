@@ -1,0 +1,87 @@
+# See /usr/share/postfix/main.cf.dist for a commented, more complete version
+
+
+# Debian specific:  Specifying a file name will cause the first
+# line of that file to be used as the name.  The Debian default
+# is /etc/mailname.
+#myorigin = /etc/mailname
+
+smtpd_banner = $myhostname ESMTP $mail_name (Debian/GNU)
+biff = no
+
+# appending .domain is the MUA's job.
+append_dot_mydomain = no
+
+# Uncomment the next line to generate "delayed mail" warnings
+#delay_warning_time = 4h
+
+readme_directory = no
+
+# TLS parameters
+smtpd_tls_cert_file=/data/config/ssl/default.pem
+smtpd_tls_key_file=/data/config/ssl/default.key
+smtpd_use_tls=yes
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+
+# See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
+# information on enabling SSL in the smtp client.
+myhostname = mailer
+mydestination = /etc/mailname, mailer, localhost.localdomain, localhost
+relayhost = 
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+mailbox_size_limit = 0
+recipient_delimiter = +
+inet_interfaces = all
+
+# Don't accept mail from domains that don't exist.
+smtpd_sender_restrictions = permit
+
+# Mail thats not for us gets filtered out by smtpd_relay_restrictions
+# When the mail is for us, we just accept everything. (could add spam blocklists/user checking etc. here)
+smtpd_recipient_restrictions = permit
+
+# Only accept mail where this server is the final destination
+smtpd_relay_restrictions = permit_mynetworks, permit_sasl_authenticated, permit_auth_destination, reject
+# smtpd_relay_restrictions = permit_mynetworks, permit_auth_destination, reject
+
+
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+
+virtual_mailbox_domains = /data/config/virtual-mailbox-domains
+virtual_mailbox_maps = hash:/data/config/virtual-mailbox-maps
+virtual_alias_maps = hash:/data/config/virtual-alias-maps
+
+#dovecot
+virtual_transport = dovecot
+dovecot_destination_recipient_limit = 1
+
+# got 20 sec to send data
+# TODO smtpd_timeout = 30s
+
+# additional authentication settings
+smtpd_tls_auth_only = yes
+smtpd_sasl_auth_enable = yes
+# auth is done via dovecot
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = private/auth
+
+policy-spf_time_limit = 3600s
+
+smtpd_client_restrictions = permit_mynetworks,
+        permit_sasl_authenticated,
+        reject_unauth_destination,
+        reject_unknown_client_hostname,
+        reject_rbl_client zen.spamhaus.org,
+        reject_rbl_client bl.spamcop.net,
+        reject_rbl_client cbl.abuseat.org,
+        check_policy_service unix:private/policy-spf
+        permit
+
+milter_protocol = 2
+milter_default_action = accept
+
+smtpd_milters = inet:localhost:12031
+non_smtpd_milters = inet:localhost:12031
+
