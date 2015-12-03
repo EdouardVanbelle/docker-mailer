@@ -1,6 +1,12 @@
 #!/bin/bash
 
-if [ \( $1 == "_run" \) -a \( ${#@} -gt 1 \) ]
+if [ ! -e /etc/my-mailer ]
+then
+	echo "This script must be runned under a 'my-mailer' container" >&2
+	exit 1
+fi
+
+if [ \( "$1" == "_run" \) -a \( ${#@} -gt 1 \) ]
 then
 	# parameters used from docker
 	shift
@@ -14,6 +20,25 @@ SERVICES="cron dovecot spamassassin opendkim postfix rsyslog"
 STD_CMD="domain-list|user-list|remap|status|shell"
 DOMAIN_CMD="domain-add|domain-del|domain-check|dkim-get-selector"
 USER_CMD="user-add|user-del|user-password"
+
+ESC=$(echo -n -e "\033" )
+
+# -------------------------------------------------------
+
+
+BLACK="$ESC[30m"
+BLUE="$ESC[34m"
+GREEN="$ESC[32m"
+CYAN="$ESC[36m"
+RED="$ESC[31m"
+PURPLE="$ESC[35m"
+BROWN="$ESC[33m"
+GRAY="$ESC[37m"
+
+BOLD="$ESC[1m"
+RESET="$ESC[0m"
+
+
 
 # -------------------------------------------------------
 
@@ -136,80 +161,97 @@ domain-check()
 	fi
 
 	echo "check MX (should be something like: <num> <docker-host>)"
+	echo -n ${CYAN}
 	TEST=$(dig +short MX $DOMAIN)
 	echo $TEST
+	echo -n ${RESET}
 	HOST=$(echo $TEST | head -n 1 | awk '{print $2}')
 	# 1 mx.enor.me.
 	echo 'quit'  | nc -q 1 $HOST 25
 	echo
 
 	echo "check submission SRV helper (should be something like: <num> <num> 587 <docker-host>)"
-	TEST=$(dig +short SRV _submission._tcp.$DOMAIN)
 	# 0 0 587 c.enor.me.
+	echo -n ${CYAN}
+	TEST=$(dig +short SRV _submission._tcp.$DOMAIN)
 	echo $TEST
+	echo -n ${RESET}
 	HOST=$(echo $TEST | head -n 1 | awk '{print $4}')
 	PORT=$(echo $TEST | head -n 1 | awk '{print $3}')
 	if [ ! $PORT -eq 587 ] 
 	then
-		echo "ko - wrong port $PORT, expected 587"
+		echo "${RED}ko${RESET} - wrong port $PORT, expected 587"
 	else
-		echo "ok - correct submission port"
+		echo "${GREEN}ok${RESET} - correct submission port"
 	fi
 	echo 'quit'  | nc -q 1 $HOST 587
 	echo
 
 	echo "check imap SRV helper (should be something like: <num> <num> 143 <docker-host>)"
+	echo -n ${CYAN}
 	TEST=$(dig +short SRV _imap._tcp.$DOMAIN)
 	# 0 0 143 c.enor.me.
 	echo $TEST
+	echo -n ${RESET}
 	HOST=$(echo $TEST | head -n 1 | awk '{print $4}')
 	PORT=$(echo $TEST | head -n 1 | awk '{print $3}')
 	if [ ! $PORT -eq 143 ] 
 	then
-		echo "ko - wrong port $PORT, expected 143"
+		echo "${RED}ko${RESET} - wrong port $PORT, expected 143"
 	else
-		echo "ok - correct imap port"
+		echo "${GREEN}ok${RESET} - correct imap port"
 	fi
 	echo 'a001 logout'  | nc -q 1 $HOST $PORT
 	echo
 	
 	echo "check sieve (port 4190)"
-	echo 'logout'  | nc -q 1 $HOST 4190
+	echo -n ${CYAN}
+	SIEVE=$(echo 'logout'  | nc -q 1 $HOST 4190 )
+	echo $SIEVE
+	echo -n ${RESET}
 	echo
 
 	echo check SPF1 '(should be something like: "(v=spf1 mx ip4:<docker-host-ip> -all)"'
-	SPF=$(dig +short TXT $DOMAIN | grep '^"v=spf1')
 	# "v=spf1 mx ip4:178.33.231.79 -all"	
+	echo -n ${CYAN}
+	SPF=$(dig +short TXT $DOMAIN | grep '^"v=spf1')
 	echo $SPF
+	echo -n ${RESET}
 	if [[ $SPF =~ -all\"$ ]]
 	then
-		echo "ok - SPF is strict (ending with -all)"
+		echo "${GREEN}ok${RESET} - SPF is strict (ending with -all)"
 	else
-		echo "ko - SPF is not found or not strict (must end with -all)"
+		echo "${RED}ko${RESET} - SPF is not found or not strict (must end with -all)"
 	fi
 	echo
 
 	SELECTOR=$(dkim-get-selector $DOMAIN)
 
 	echo check DKIM entry	
+	echo -n ${CYAN}
+	DKIM=$(dig +short TXT  $SELECTOR._domainkey.$DOMAIN) | head -c 40
+	echo $DKIM
+	echo -n ${RESET}
 	if opendkim-testkey -d $DOMAIN -s $SELECTOR 
 	then
-		echo ok - dkim key for selector $SELECTOR found and correct 
+		echo ${GREEN}ok${RESET} - dkim key for selector $SELECTOR found and correct 
 	else
-		echo ko - missing dkim key, please add:
+		echo ${RED}ko${RESET} - missing dkim key, please add:
 		cat /data/config/opendkim/keys/$DOMAIN/$SELECTOR.txt
 	fi
 	echo
 
 	echo check ADSP '(should be "dkim=all")'
-	ADSP=$(dig +short TXT  _adsp._domainkey.$DOMAIN) 
 	# "v=spf1 mx ip4:178.33.231.79 -all"	
+	echo -n ${CYAN}
+	ADSP=$(dig +short TXT  _adsp._domainkey.$DOMAIN) 
 	echo $ADSP
+	echo -n ${RESET}
 	if [ "$ADSP" == '"dkim=all"' ]
 	then
-		echo "ok - ADSP is strict"
+		echo "${GREEN}ok${RESET} - ADSP is strict"
 	else
-		echo "ko - ADSP is not correct, should have: _adsp._domainkey.$DOMAIN TXT ""'"dkim=all"'"
+		echo "${RED}ko${RESET} - ADSP is not correct, should have: _adsp._domainkey.$DOMAIN TXT ""'"dkim=all"'"
 	fi
 	echo
 
