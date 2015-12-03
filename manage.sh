@@ -463,12 +463,18 @@ security-check()
 
 _init()
 {
+        if [ $PPID != 0 ]
+        then
+                echo "aready in container"
+                exit 0
+        fi
+
 	if [ -s /data/config/passwd ] 
 	then
 		start
 		echo "Daemons started"
 	else
-		echo "${RED}Please initialize mailer using $0 tool, help:${RESET}"
+		echo -e "${RED}Please initialize mailer using $0 tool, help:${RESET}\n"
 		$0 
 	fi
 }
