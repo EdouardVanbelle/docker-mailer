@@ -421,10 +421,23 @@ reload()
 
 security-check()
 {
+	test -d /run/dovecot               || mkdir /run/dovecot
+	test -d /data/vmail                || mkdir /data/vmail
+	test -d /data/config               || mkdir /data/config
+	test -d /data/config/ssl           || mkdir /data/config/ssl
+	test -d /data/config/opendkim      || mkdir /data/config/opendkim
+	test -d /data/config/opendkim/keys || mkdir /data/config/opendkim/keys
+
+	test -d /data/config/opendkim/KeyTable     || touch /data/config/opendkim/KeyTable
+	test -d /data/config/opendkim/SigningTable || touch /data/config/opendkim/SigningTable
+	test -d /data/config/opendkim/TrustedHosts || echo -e "127.0.0.1\nlocalhost" > /data/config/opendkim/TrustedHosts
+
+	chown vmail: /data/vmail
+
 	# create basic 
 	test -e /data/config/passwd || touch /data/config/passwd
 	chown dovecot: /data/config/passwd
-	chmod 700 /data/config/passwd
+	chmod 600 /data/config/passwd
 
 	test -e /data/config/virtual-mailbox-domains || touch /data/config/virtual-mailbox-domains
 
@@ -450,33 +463,23 @@ security-check()
 
 _init()
 {
-	test -d /data/config               || mkdir /data/config
-	test -d /data/vmail                || mkdir /data/vmail
-	test -d /run/dovecot               || mkdir /run/dovecot
-	test -d /data/config/opendkim      || mkdir /data/config/opendkim
-	test -d /data/config/opendkim/keys || mkdir /data/config/opendkim/keys
-
-	test -d /data/config/opendkim/KeyTable     || touch /data/config/opendkim/KeyTable
-	test -d /data/config/opendkim/SigningTable || touch /data/config/opendkim/SigningTable
-	test -d /data/config/opendkim/TrustedHosts || echo -e "127.0.0.1\nlocalhost" > /data/config/opendkim/TrustedHosts
-
-	chown vmail: /data/vmail
-	#chmod -R +r /run/dovecot
-	#chmod -R +w /run/dovecot
-
 	if [ -s /data/config/passwd ] 
 	then
 		start
 		echo "Daemons started"
 	else
-		echo "Please initialize mailer using $0 tool"
+		echo "${RED}Please initialize mailer using $0 tool, help:${RESET}"
+		$0 
 	fi
 }
 
 _run()
 {
 	_init
-	tail -F /var/log/messages
+	if [ -s /data/config/passwd ] 
+	then
+		tail -F /var/log/messages
+	fi
 }
 
 shell()
