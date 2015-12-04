@@ -1,10 +1,10 @@
 FROM debian:jessie
 
-MAINTAINER edouard@vanbelle.fr 
+MAINTAINER Edouard Vanbelle <edouard@vanbelle.fr>
 
 RUN \
-	apt-get update && \
-	DEBIAN_FRONTEND=noninteractive apt-get install -q -y \
+	apt-get update \
+	&& DEBIAN_FRONTEND=noninteractive apt-get install -q -y \
 		dnsutils netcat \
 		openssl rsyslog \
 		postfix opendkim opendkim-tools postfix-policyd-spf-python \
@@ -28,7 +28,7 @@ ADD etc/default 		/etc/default
 ADD etc/default/spamassassin 	/etc/default/spamassassin
 ADD etc/postfix/main.cf 	/etc/postfix/main.cf
 ADD etc/postfix/master.cf 	/etc/postfix/master.cf
-ADD etc/dovecot/etc/ 		/etc/dovecot/etc/
+ADD etc/dovecot/conf.d/	 	/etc/dovecot/conf.d/
 
 # mails should be at least persistant...
 VOLUME /data

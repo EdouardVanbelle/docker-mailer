@@ -7,3 +7,5 @@ add:
 security:
 	container can run in non root from host, it only requires CAP_NET_BIND_SERVICE
 
+roundcube plugins:
+	http://notes.sagredo.eu/node/35
