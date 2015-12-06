@@ -4,20 +4,19 @@ This container is designed for you if you are like me, tired of reinstalling you
 It contains:
 
   * postfix
-  * dovecot
+  * opendkim (sign all mails + specify DNS zone entries + check all incoming mails)
+  * dovecot with sieve
   * spamassassin 
-  * opendkim
-  * postfix
 
 There is a helper to configure your container
 
 # build
 
-	`# docker build -t my-mailer .`
+	# docker build -t my-mailer .
 
 # run
 
-	`# docker run -t -i -h my-mailer -p 25:25 -p 143:143 -p 587:587 -p 4190:4190 -v /home/mail-data:/data my-mailer`	
+	# docker run -t -i -h my-mailer -p 25:25 -p 143:143 -p 587:587 -p 4190:4190 -v /home/mail-data:/data my-mailer
 
 # tools
 

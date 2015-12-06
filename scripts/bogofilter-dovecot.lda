@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# get latest argument
+RECIPIENT=${@: -1}
+
+# split it with @
+USER=${RECIPIENT%@*}
+DOMAIN=${RECIPIENT#*@}
+
+# bogofilter database
+WORKDIR=/data/vmail/$DOMAIN/$USER
+
+# security, ensure that $WORKDIER already exists
+if [ ! -d $WORKDIR ]
+then
+        # ok $WORKDIR does not exists yet, call directly the default LDA
+	/usr/bin/logger -p mail.err -- bogofilter-dovecot.lda: $WORKDIR does not exist yet
+        exec /usr/lib/dovecot/deliver
+fi
+
+if [ ! -e /usr/bin/bogofilter ]
+then
+        # ok $WORKDIR does not exists yet, call directly the default LDA
+	/usr/bin/logger -p mail.err -- bogofilter-dovecot.lda: bogofilter is not installed
+        exec /usr/lib/dovecot/deliver
+fi
+
+
+DB_DIR=$WORKDIR/bogofilter
+
+test -d $DB_DIR || mkdir $DB_DIR
+
+/usr/bin/bogofilter -u -e -p -d $DB_DIR | /usr/lib/dovecot/deliver "$@"
+EXITCODE=$?
+
+# nb: reminder
+# learn as spam (bad): /usr/bin/bogofilter -d $DATABASEDIR -s -I "$mail"
+# learn as ham (ok):   /usr/bin/bogofilter -d $DATABASEDIR -n -I "$mail"
+
+# return by the same exit code
+exit $EXITCODE

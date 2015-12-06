@@ -17,9 +17,10 @@ ENABLED=1
 # make sure --max-children is not set to anything higher than 5,
 # unless you know what you're doing.
 
-#SPAMD_HOME="/home/spamd/"
+#SPAMD_HOME="/data/cache/spamassassin"
+SPAMD_HOME="/var/lib/spamassassin/"
 #--helper-home-dir ${SPAMD_HOME}
-OPTIONS="--create-prefs --max-children 5 --username nobody --helper-home-dir /var/lib/spamassassin -s daemon --syslog-socket native"
+OPTIONS="--create-prefs --max-children 5 --username debian-spamd --helper-home-dir ${SPAMD_HOME} -s mail --syslog-socket native"
 # Pid file
 # Where should spamd write its PID to file? If you use the -u or
 # --username option above, this needs to be writable by that user.

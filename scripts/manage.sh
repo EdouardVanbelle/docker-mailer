@@ -427,6 +427,7 @@ security-check()
 	test -d /data/config/ssl           || mkdir /data/config/ssl
 	test -d /data/config/opendkim      || mkdir /data/config/opendkim
 	test -d /data/config/opendkim/keys || mkdir /data/config/opendkim/keys
+	test -d /data/cache/postfix	   || mkdir /data/cache/postfix
 
 	test -d /data/config/opendkim/KeyTable     || touch /data/config/opendkim/KeyTable
 	test -d /data/config/opendkim/SigningTable || touch /data/config/opendkim/SigningTable

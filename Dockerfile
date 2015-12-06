@@ -5,22 +5,24 @@ MAINTAINER Edouard Vanbelle <edouard@vanbelle.fr>
 RUN \
 	apt-get update \
 	&& DEBIAN_FRONTEND=noninteractive apt-get install -q -y \
-		dnsutils netcat \
+		ca-certificates dnsutils netcat \
 		openssl rsyslog \
 		postfix opendkim opendkim-tools postfix-policyd-spf-python \
-		spamassassin spamc \
-		dovecot-common dovecot-imapd dovecot-sqlite dovecot-sieve dovecot-managesieved \
+		spamassassin spamc bogofilter \
+		dovecot-common dovecot-imapd dovecot-sqlite dovecot-antispam dovecot-sieve dovecot-managesieved \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
 # /etc/my-mailer is a stupid marker for manage.sh to check if it is inside container
 RUN	mkdir /data && \
+	mkdir /data/cache && \
 	groupadd -g 5000 vmail && \
 	useradd -g vmail -u 5000 vmail -d /data/vmail -m && \
 	echo my-mailer > /etc/mailname && \
 	touch /etc/my-mailer
 
-ADD manage.sh 			/manage.sh
+ADD scripts/manage.sh 			/manage.sh
+ADD scripts/bogofilter-dovecot.lda 	/usr/local/bin/bogofilter-dovecot.lda
 
 ADD etc/rsyslog.conf		/etc/rsyslog.conf
 ADD etc/opendkim.conf 		/etc/opendkim.conf

@@ -145,9 +145,10 @@ mailman   unix  -       n       n       -       -       pipe
   ${nexthop} ${user}
 
 dovecot   unix  -       n       n       -       -       pipe
-  flags=DRhu user=vmail:vmail argv=/usr/lib/dovecot/deliver -f ${sender} -d ${user}@${nexthop} -a ${recipient}
+  flags=DRhu user=vmail:vmail argv=/usr/local/bin/bogofilter-dovecot.lda -f ${sender} -d ${user}@${nexthop} -a ${recipient}
+#  flags=DRhu user=vmail:vmail argv=/usr/lib/dovecot/deliver -f ${sender} -d ${user}@${nexthop} -a ${recipient}
 #  flags=DRhu user=vmail:vmail argv=/usr/lib/dovecot/deliver -f ${sender} -d ${recipient}
 
 spamassassin unix -     n       n       -       -       pipe
-  user=spamd argv=/usr/bin/spamc -f -e  /usr/sbin/sendmail -oi -f ${sender} ${recipient}
+  user=debian-spamd argv=/usr/bin/spamc -f -e  /usr/sbin/sendmail -oi -f ${sender} ${recipient}
 

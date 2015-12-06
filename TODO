@@ -9,3 +9,12 @@ security:
 
 roundcube plugins:
 	http://notes.sagredo.eu/node/35
+
+spam:
+	check either bogofilter or spamassassin like:
+		http://christian.weblog.heimdaheim.de/2013/06/19/sa-learn-dovecot-virtual-users-and-virtual-user-configs/	
+		http://johannes.sipsolutions.net/Projects/dovecot-antispam
+		http://www.iredmail.org/forum/topic8169-iredmail-support-antispam-via-dovecot-and-spamassassin.html
+		https://i-mscp.net/index.php/Thread/7117-Dovecot-SpamToJunk-ImapIDLE-and-Expunge-Junk-Folder/
+		https://www.owlfish.com/thoughts/dovecot-antispam-2011-03-21.html
+
