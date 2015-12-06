@@ -31,6 +31,7 @@ ADD etc/default/spamassassin 	/etc/default/spamassassin
 ADD etc/postfix/main.cf 	/etc/postfix/main.cf
 ADD etc/postfix/master.cf 	/etc/postfix/master.cf
 ADD etc/dovecot/conf.d/	 	/etc/dovecot/conf.d/
+ADD etc/dovecot/sieve/	 	/etc/dovecot/sieve/
 
 # mails should be at least persistant...
 VOLUME /data
