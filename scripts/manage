@@ -19,7 +19,7 @@ SERVICES="cron dovecot spamassassin opendkim postfix rsyslog"
 
 STD_CMD="domain-list|user-list|remap|status|shell"
 DOMAIN_CMD="domain-add|domain-del|domain-check|dkim-get-selector"
-USER_CMD="user-add|user-del|user-password"
+USER_CMD="user-add|user-del|user-password|build-virtual-folder"
 
 ESC=$(echo -n -e "\033" )
 
@@ -306,7 +306,7 @@ user-add()
 	echo $EMAIL $EMAIL >>/data/config/virtual-sender-login-maps
 	postmap /data/config/virtual-sender-login-maps
 
-	dovecot-virtual-folder $EMAIL
+	build-virtual-folder $EMAIL
 
 	if [ $AUTOPASS == 1 ]
 	then
@@ -316,19 +316,24 @@ user-add()
 	fi
 }
 
-dovecot-virtual-folder()
+build-virtual-folder()
 {
 	EMAIL=$1
 
 	USER=${EMAIL%@*}
 	DOMAIN=${EMAIL#*@}
 
-	test -e "/data/vmail/$DOMAIN/$USER" || mkdir "/data/vmail/$DOMAIN/$USER"
-	chown vmail: "/data/vmail/$DOMAIN/$USER"
+	WORKDIR="/data/vmail/$DOMAIN/$USER"
+
+	if [ ! -e $WORKDIR ]
+	then
+		mkdir $WORKDIR
+		chown vmail: $WORKDIR
+	fi
 
 	# copy all template
-	cp -r /etc/dovecot/virtual-template /data/vmail/$DOMAIN/$USER/virtual
-	chown -R vmail: /data/vmail/$DOMAIN/$USER/virtual
+	cp -r /etc/dovecot/virtual-template $WORKDIR/virtual
+	chown -R vmail: $WORKDIR/virtual
 }
 
 user-del()
@@ -356,7 +361,9 @@ user-del()
 		postmap $F
 	done 
 
-	echo "$EMAIL deleted (data kept)"
+	WORKDIR="/data/vmail/$DOMAIN/$USER"
+
+	echo "$EMAIL deleted (data $WORKDIR kept)"
 }
 
 user-password()
@@ -540,7 +547,7 @@ case $VERB in
 		fi
 		;;
 
-	user-add|user-del|user-password)
+	user-add|user-del|user-password|build-virtual-folder)
 		EMAIL=$1
 		shift
 		test -z "$EMAIL" && echo usage $0 $VERB '<email>' >&2 && exit 1
