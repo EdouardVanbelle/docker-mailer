@@ -25,14 +25,15 @@ ADD scripts/manage 			/usr/local/bin/manage
 ADD scripts/bogofilter-dovecot.lda 	/usr/local/bin/bogofilter-dovecot.lda
 ADD scripts/antispam-action.wrapper     /usr/local/bin/antispam-action.wrapper
 
-ADD etc/rsyslog.conf		/etc/rsyslog.conf
-ADD etc/opendkim.conf 		/etc/opendkim.conf
-ADD etc/default 		/etc/default
-ADD etc/default/spamassassin 	/etc/default/spamassassin
-ADD etc/postfix/main.cf 	/etc/postfix/main.cf
-ADD etc/postfix/master.cf 	/etc/postfix/master.cf
-ADD etc/dovecot/conf.d/	 	/etc/dovecot/conf.d/
-ADD etc/dovecot/sieve/	 	/etc/dovecot/sieve/
+ADD etc/rsyslog.conf		  /etc/rsyslog.conf
+ADD etc/opendkim.conf 		  /etc/opendkim.conf
+ADD etc/default 		  /etc/default
+ADD etc/default/spamassassin 	  /etc/default/spamassassin
+ADD etc/postfix/main.cf 	  /etc/postfix/main.cf
+ADD etc/postfix/master.cf 	  /etc/postfix/master.cf
+ADD etc/dovecot/conf.d/	 	  /etc/dovecot/conf.d/
+ADD etc/dovecot/sieve/	 	  /etc/dovecot/sieve/
+ADD etc/dovecot/virtual-template/ /etc/dovecot/virtual-template/
 
 # mails should be at least persistant...
 VOLUME /data

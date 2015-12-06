@@ -306,12 +306,29 @@ user-add()
 	echo $EMAIL $EMAIL >>/data/config/virtual-sender-login-maps
 	postmap /data/config/virtual-sender-login-maps
 
+	dovecot-virtual-folder $EMAIL
+
 	if [ $AUTOPASS == 1 ]
 	then
 		echo $EMAIL added with password $PASSWORD
 	else
 		echo $EMAIL added
 	fi
+}
+
+dovecot-virtual-folder()
+{
+	EMAIL=$1
+
+	USER=${EMAIL%@*}
+	DOMAIN=${EMAIL#*@}
+
+	test -e "/data/vmail/$DOMAIN/$USER" || mkdir "/data/vmail/$DOMAIN/$USER"
+	chown vmail: "/data/vmail/$DOMAIN/$USER"
+
+	# copy all template
+	cp -r /etc/dovecot/virtual-template /data/vmail/$DOMAIN/$USER/virtual
+	chown -R vmail: /data/vmail/$DOMAIN/$USER/virtual
 }
 
 user-del()
