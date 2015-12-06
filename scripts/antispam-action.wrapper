@@ -29,19 +29,22 @@ HOME=/data/vmail/$DOMAIN/$USER/bogofilter
 
 if [ ! -d $HOME ]
 then
-	/usr/bin/logger -p mail.err -- "antispam-action-wrapper.sh: $HOME does not exist yet"
+	/usr/bin/logger -p mail.err -- "antispam-action.wrapper: $HOME does not exist yet"
         exit 255
 fi
 
-if [ ! -z "$ACTION" ]
+if [ -z "$ACTION" ]
 then
-	/usr/bin/logger -p mail.err -- "antispam-action-wrapper.sh: no action (--spam or --ham) specified"
+	/usr/bin/logger -p mail.err -- "antispam-action.wrapper: no action (--spam or --ham) specified"
         exit 255
 fi
 
 
 /usr/bin/bogofilter -l -q -d $HOME $ACTION 
+
 EXITCODE=$?
+
+/usr/bin/logger -p mail.info -- "antispam-action.wrapper: '/usr/bin/bogofilter -l -q -d $HOME $ACTION' returned: $EXITCODE"
 
 exit $EXITCODE
 

@@ -21,8 +21,9 @@ RUN	mkdir /data && \
 	echo my-mailer > /etc/mailname && \
 	touch /etc/my-mailer
 
-ADD scripts/manage.sh 			/manage.sh
+ADD scripts/manage 			/usr/local/bin/manage
 ADD scripts/bogofilter-dovecot.lda 	/usr/local/bin/bogofilter-dovecot.lda
+ADD scripts/antispam-action.wrapper     /usr/local/bin/antispam-action.wrapper
 
 ADD etc/rsyslog.conf		/etc/rsyslog.conf
 ADD etc/opendkim.conf 		/etc/opendkim.conf
@@ -43,5 +44,5 @@ EXPOSE 25 587 143 4190
 # XXX: no need to open SSL (TLS is forced): 995 993
 
 # by default call: /manage.sh _run
-ENTRYPOINT [ "/manage.sh", "_run" ]
+ENTRYPOINT [ "/usr/local/bin/manage", "_run" ]
 
