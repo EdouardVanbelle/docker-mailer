@@ -46,3 +46,6 @@ There is a helper to configure your container
 	_adsp._domainkey.dropz.one TXT 'dkim=all'
 	dropz.one added (use /manage.sh domain-check dropz.one to test)
 
+# Licence
+
+MIT
