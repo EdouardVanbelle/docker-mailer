@@ -29,6 +29,7 @@ ADD etc/rsyslog.conf		  /etc/rsyslog.conf
 ADD etc/opendkim.conf 		  /etc/opendkim.conf
 ADD etc/default 		  /etc/default
 ADD etc/default/spamassassin 	  /etc/default/spamassassin
+ADD etc/spamassassin/local.cf	  /etc/spamassassin/local.cf
 ADD etc/postfix/main.cf 	  /etc/postfix/main.cf
 ADD etc/postfix/master.cf 	  /etc/postfix/master.cf
 ADD etc/dovecot/conf.d/	 	  /etc/dovecot/conf.d/
