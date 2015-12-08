@@ -39,10 +39,20 @@ then
         exit 255
 fi
 
+TMPFILE=$(mktemp -p /tmp mail.learn.XXXXXXXXX)
+cat > $TMPFILE
 
-/usr/bin/bogofilter -l -q -d $HOME $ACTION 
-
+# spamassassin
+/usr/bin/sa-learn --spam --no-sync         < $TMPFILE
 EXITCODE=$?
+
+/usr/bin/logger -p mail.info -- "antispam-action.wrapper: '/usr/bin/sa-learn --spam --no-sync' returned: $EXITCODE"
+
+# bogofilter
+/usr/bin/bogofilter -l -q -d $HOME $ACTION < $TMPFILE
+EXITCODE=$?
+
+rm -f $TMPFILE
 
 /usr/bin/logger -p mail.info -- "antispam-action.wrapper: '/usr/bin/bogofilter -l -q -d $HOME $ACTION' returned: $EXITCODE"
 
