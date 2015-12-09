@@ -14,10 +14,12 @@ do
                         shift;
                         ;;
                 --spam)
-                        ACTION=-s
+                        BOGO_ACTION=-s
+			SA_ACTION=--spam
                         ;;
                 --ham)
-                        ACTION=-n
+                        BOGO_ACTION=-n
+			SA_ACTION=--ham
                         ;;
                 *)
                         # unknown parameter
@@ -33,7 +35,7 @@ then
         exit 255
 fi
 
-if [ -z "$ACTION" ]
+if [ -z "$BOGO_ACTION" ]
 then
 	/usr/bin/logger -p mail.err -- "antispam-action.wrapper: no action (--spam or --ham) specified"
         exit 255
@@ -43,18 +45,18 @@ TMPFILE=$(mktemp -p /tmp mail.learn.XXXXXXXXX)
 cat > $TMPFILE
 
 # spamassassin
-/usr/bin/sa-learn --spam --no-sync         < $TMPFILE
+/usr/bin/sa-learn $SA_ACTION --no-sync         < $TMPFILE
 EXITCODE=$?
 
-/usr/bin/logger -p mail.info -- "antispam-action.wrapper: '/usr/bin/sa-learn --spam --no-sync' returned: $EXITCODE"
+/usr/bin/logger -p mail.info -- "antispam-action.wrapper: '/usr/bin/sa-learn $SA_ACTION --no-sync' returned: $EXITCODE"
 
 # bogofilter
-/usr/bin/bogofilter -l -q -d $HOME $ACTION < $TMPFILE
+/usr/bin/bogofilter -l -q -d $HOME $BOGO_ACTION < $TMPFILE
 EXITCODE=$?
 
 rm -f $TMPFILE
 
-/usr/bin/logger -p mail.info -- "antispam-action.wrapper: '/usr/bin/bogofilter -l -q -d $HOME $ACTION' returned: $EXITCODE"
+/usr/bin/logger -p mail.info -- "antispam-action.wrapper: '/usr/bin/bogofilter -l -q -d $HOME $BOGO_ACTION' returned: $EXITCODE"
 
 exit $EXITCODE
 
