@@ -18,7 +18,6 @@ RUN	mkdir /data && \
 	mkdir /data/cache && \
 	groupadd -g 5000 vmail && \
 	useradd -g vmail -u 5000 vmail -d /data/vmail -m && \
-	echo my-mailer > /etc/mailname && \
 	touch /etc/my-mailer
 
 ADD scripts/manage 			/usr/local/bin/manage

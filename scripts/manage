@@ -18,7 +18,7 @@ SERVICES="cron dovecot spamassassin opendkim postfix rsyslog"
 
 
 STD_CMD="domain-list|user-list|remap|status|shell"
-DOMAIN_CMD="domain-add|domain-del|domain-check|dkim-get-selector"
+DOMAIN_CMD="domain-add|domain-del|domain-check|dkim-get-selector|set-hostname"
 USER_CMD="user-add|user-del|user-password|build-virtual-folder"
 
 ESC=$(echo -n -e "\033" )
@@ -75,6 +75,12 @@ usage()
 }
 
 # -------------------------------------------------------
+set-hostname()
+{
+	HOST=$1
+	echo $HOST > /data/config/hostname
+}
+
 
 domain-list()
 {
@@ -483,9 +489,24 @@ security-check()
 		cp /etc/ssl/certs/ssl-cert-snakeoil.pem   /data/config/ssl/default.pem 
 		cp /etc/ssl/private/ssl-cert-snakeoil.key /data/config/ssl/default.key
 	fi
-	
+
 	# security
 	chmod 640 /data/config/ssl/*.key
+
+	if [ -e /data/config/hostname ]
+	then
+		SERVER_HOSTNAME=$(cat /data/config/hostname)
+		CERT_HOSTNAME=$(openssl x509 -noout -in /data/config/ssl/default.pem -subject | sed 's/.*\/CN=//; s/\/.*//;')
+
+		if [ "$CERT_HOSTNAME" != "$SERVER_HOSTNAME" ]
+		then
+			echo "WARNING: /data/config/ssl/default.pem belongs to $CERT_HOSTNAME, which differs from $SERVER_HOSTNAME"
+		fi
+
+		# write out mailname
+		echo $SERVER_HOSTNAME > /etc/mailname
+	fi
+	
 }
 
 _init()
@@ -496,8 +517,18 @@ _init()
                 exit 0
         fi
 
+        if [ ! -e /data/config/hostname ]
+        then
+                echo -e "please provide define hostname that will be used using:\n    $0 set-hostname <hostname>"
+                exit 1
+        fi
+
 	if [ -s /data/config/passwd ] 
 	then
+
+		SERVER_HOSTNAME=$(cat /data/config/hostname)
+		sed -i "s/^myhostname *=.*/myhostname = ${SERVER_HOSTNAME}/" /etc/postfix/main.cf
+
 		start
 		echo "Daemons started"
 	else
@@ -509,6 +540,7 @@ _init()
 _run()
 {
 	_init
+
 	if [ -s /data/config/passwd ] 
 	then
 		tail -F /var/log/messages
@@ -518,6 +550,8 @@ _run()
 shell()
 {
 	_init
+	debian_chroot=DOCKER
+	export debian_chroot
 	exec /bin/bash
 }
 
@@ -537,7 +571,7 @@ case $VERB in
 		;;
 
 	# 1 domain param
-	domain-add|domain-del|domain-check|dkim-get-selector)
+	domain-add|domain-del|domain-check|dkim-get-selector|set-hostname)
 		DOMAIN=$1
 		shift
 		test -z "$DOMAIN" && echo usage $0 $VERB '<domain>' >&2 && exit 1
