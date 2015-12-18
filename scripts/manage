@@ -473,6 +473,13 @@ security-check()
 	chmod 600 /data/config/passwd
 
 	test -e /data/config/virtual-mailbox-domains || touch /data/config/virtual-mailbox-domains
+	if [ ! -e /data/config/recipient_rules ]
+	then
+        	echo "# add email you want to reject here via"        >  /data/config/recipient_rules
+		echo "# goal is to reject mails when you do catchall" >> /data/config/recipient_rules
+        	echo "# ex: sample@mydomain.tld REJECT"               >> /data/config/recipient_rules
+		postmap /data/config/recipient_rules
+	fi
 
 	for map in /data/config/virtual-sender-login-maps /data/config/virtual-mailbox-maps /data/config/virtual-alias-maps
 	do
