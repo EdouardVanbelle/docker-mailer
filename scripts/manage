@@ -466,6 +466,8 @@ security-check()
 	test -d /data/config/opendkim/TrustedHosts || echo -e "127.0.0.1\nlocalhost" > /data/config/opendkim/TrustedHosts
 
 	chown vmail: /data/vmail /data/cache/spamassassin/bayes_db
+	# because spamd need access too
+	chmod 777 /data/cache/spamassassin/bayes_db
 
 	# create basic 
 	test -e /data/config/passwd || touch /data/config/passwd
