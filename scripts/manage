@@ -126,7 +126,7 @@ domain-add()
 	DOMAIN=$1
 
 
-	if grep -q -- "$DOMAIN$" /data/config/virtual-mailbox-domains
+	if grep -q -- "^$DOMAIN$" /data/config/virtual-mailbox-domains
 	then
 		echo domain already exists >&2
 		exit 1
