@@ -161,6 +161,9 @@ mailman   unix  -       n       n       -       -       pipe
 
 dovecot   unix  -       n       n       -       -       pipe
   flags=DRhu user=vmail:vmail argv=/usr/local/bin/bogofilter-dovecot.lda -f ${sender} -d ${user}@${nexthop} -a ${recipient}
+# in order to put user+ext@email into "ext" folder: (non existing folder will not be created)
+#  flags=DRhu user=vmail:vmail argv=/usr/local/bin/bogofilter-dovecot.lda -f ${sender} -d ${user}@${nexthop} -m ${extension}
+
 #  flags=DRhu user=vmail:vmail argv=/usr/lib/dovecot/deliver -f ${sender} -d ${user}@${nexthop} -a ${recipient}
 #  flags=DRhu user=vmail:vmail argv=/usr/lib/dovecot/deliver -f ${sender} -d ${recipient}
 
