@@ -6,7 +6,7 @@ RUN \
 	apt-get update \
 	&& DEBIAN_FRONTEND=noninteractive apt-get install -q -y \
 		ca-certificates dnsutils netcat \
-		openssl rsyslog \
+		openssl rsyslog sqlite3 \
 		postfix opendkim opendkim-tools postfix-policyd-spf-python \
 		spamassassin spamc bogofilter \
 		dovecot-common dovecot-imapd dovecot-sqlite dovecot-antispam dovecot-sieve dovecot-managesieved \
@@ -40,9 +40,9 @@ VOLUME /data
 
 # XXX take care that temp files like mails spool or spamassassin db will be in /var/... 
 
-# SMTP SUBMISSION IMAP MANAGESIEVE
-EXPOSE 25 587 143 4190
-# XXX: no need to open SSL (TLS is forced): 995 993
+# SMTP SUBMISSION IMAP MANAGESIEVE SMTPS IMAPS
+EXPOSE 25 587 143 4190 465 993
+# XXX: don't really need imaps nor smtps (TLS is present)
 
 # by default call: /manage.sh _run
 ENTRYPOINT [ "/usr/local/bin/manage", "_run" ]
