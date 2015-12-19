@@ -329,6 +329,12 @@ build-virtual-folder()
 	USER=${EMAIL%@*}
 	DOMAIN=${EMAIL#*@}
 
+	if [ ! -e "/data/vmail/$DOMAIN" ]
+	then
+		mkdir "/data/vmail/$DOMAIN"
+		chown vmail: "/data/vmail/$DOMAIN"
+	fi
+
 	WORKDIR="/data/vmail/$DOMAIN/$USER"
 
 	if [ ! -e $WORKDIR ]
