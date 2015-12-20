@@ -16,3 +16,10 @@ spam:
 		https://i-mscp.net/index.php/Thread/7117-Dovecot-SpamToJunk-ImapIDLE-and-Expunge-Junk-Folder/
 		https://www.owlfish.com/thoughts/dovecot-antispam-2011-03-21.html
 
+security:
+	dovecot antispam plugin should "sudo" into spamd to alter spamassassin bayes db rather chmoding 777 files
+
+move into archives, purge old spams, ...
+examples:
+	doveadm search -u edouard@vanbelle.fr mailbox INBOX SEEN UNFLAGGED BEFORE 20weeks # | while read guid uid; do doveadm fetch -u edouard@vanbelle.fr "guid" mailbox-guid $guid uid $uid; echo "-$guid $uid-------------------"; done
+
