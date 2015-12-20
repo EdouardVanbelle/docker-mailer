@@ -1,0 +1,18 @@
+#!/bin/bash
+
+NOW=$(date +'%s')
+
+TWO_MONTH_AGO=$(date '+%Y/%m' -d @$(( $NOW - 3600*24*31   )) )
+ONE_MONTH_AGO=$(date '+%Y/%m' -d @$(( $NOW - 3600*24*31*2 )) )
+
+for USER in $(/usr/local/bin/manage user-list)
+do
+        # archive
+        doveadm move -u $USER Archive/$TWO_MONTH_AGO mailbox INBOX SEEN UNFLAGGED savedbefore 62days
+
+        # expunge 1 month old Junk
+        doveadm expunge -u $USER mailbox Junk savedbefore 31days
+
+        ## expunge 2 month old Unsure
+        #echo doveadm expunge -u $USER mailbox Unsure savedbefore 62days
+done
