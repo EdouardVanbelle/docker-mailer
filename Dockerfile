@@ -23,6 +23,7 @@ RUN	mkdir /data && \
 ADD scripts/manage 			/usr/local/bin/manage
 ADD scripts/bogofilter-dovecot.lda 	/usr/local/bin/bogofilter-dovecot.lda
 ADD scripts/antispam-action.wrapper     /usr/local/bin/antispam-action.wrapper
+ADD scripts/dovecot-archive             /usr/local/bin/dovecot-archive
 
 ADD etc/rsyslog.conf		  /etc/rsyslog.conf
 ADD etc/opendkim.conf 		  /etc/opendkim.conf
