@@ -4,8 +4,3 @@ if anyof (header :contains "X-Bogosity" "Spam,", header :contains "X-Spam-Status
 {
         fileinto "Junk";
 }
-# rule:[unsure]
-if header :contains "X-Bogosity" "Unsure"
-{
-        fileinto "Unsure";
-}
