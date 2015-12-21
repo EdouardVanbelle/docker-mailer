@@ -1,18 +1,48 @@
 #!/bin/bash
 
+case $1 in
+        --test)
+                TEST=1
+        ;;
+esac
+
 NOW=$(date +'%s')
 
-TWO_MONTH_AGO=$(date '+%Y/%m' -d @$(( $NOW - 3600*24*31   )) )
-ONE_MONTH_AGO=$(date '+%Y/%m' -d @$(( $NOW - 3600*24*31*2 )) )
+TWO_MONTH_AGO=$(date '+%Y' -d @$(( $NOW - 3600*24*31   )) )
+ONE_MONTH_AGO=$(date '+%Y' -d @$(( $NOW - 3600*24*31*2 )) )
 
-for USER in $(/usr/local/bin/manage user-list)
+#TODO: for USER in $(/usr/local/bin/manage user-list)
+for USER in edouard@vanbelle.fr
 do
+        # XXX: savedbefore OR before ?
+
         # archive
-        doveadm move -u $USER Archive/$TWO_MONTH_AGO mailbox INBOX SEEN UNFLAGGED savedbefore 62days
+        QUERY="mailbox INBOX SEEN UNFLAGGED before 62days"
+
+        echo "$USER: archive old mails to Archive/$TWO_MONTH_AGO"
+        if [ -z $TEST ]
+        then
+                # create folder + subscribe
+                doveadm mailbox create -u edouard@vanbelle.fr Archive/$TWO_MONTH_AGO 2>/dev/null
+                # move
+                doveadm -v move -u $USER Archive/$TWO_MONTH_AGO $QUERY
+        else
+                doveadm search -u $USER $QUERY
+        fi
+
 
         # expunge 1 month old Junk
-        doveadm expunge -u $USER mailbox Junk savedbefore 31days
+        QUERY="mailbox Junk before 31days"
+        echo "$USER: expunging old Junk mails"
+        if [ -z $TEST ]
+        then
+                doveadm -v expunge -u $USER $QUERY
+        else
+                doveadm search -u $USER $QUERY
+        fi
 
         ## expunge 2 month old Unsure
         #echo doveadm expunge -u $USER mailbox Unsure savedbefore 62days
+
+        echo
 done
