@@ -32,14 +32,17 @@ do
 
 
         # expunge 1 month old Junk
-        QUERY="mailbox Junk before 31days"
-        echo "$USER: expunging old Junk mails"
-        if [ -z $TEST ]
-        then
-                doveadm -v expunge -u $USER $QUERY
-        else
-                doveadm search -u $USER $QUERY
-        fi
+	for BOX in Junk Trash
+	do
+		QUERY="mailbox $BOX before 31days"
+		echo "$USER: expunging old $BOX mails"
+		if [ -z $TEST ]
+		then
+			doveadm -v expunge -u $USER $QUERY
+		else
+			doveadm search -u $USER $QUERY
+		fi
+	done
 
         ## expunge 2 month old Unsure
         #echo doveadm expunge -u $USER mailbox Unsure savedbefore 62days
