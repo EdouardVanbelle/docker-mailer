@@ -111,5 +111,5 @@ ifplugin Mail::SpamAssassin::Plugin::Shortcircuit
 
 endif # Mail::SpamAssassin::Plugin::Shortcircuit
 
-include /etc/spamassassin/whitelist.cf
+include /data/cache/spamassassin/whitelist.cf
 

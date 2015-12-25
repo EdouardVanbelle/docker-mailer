@@ -39,9 +39,9 @@ sent-mail()
         roundcube-contacts
         managed-domains
         sent-mail
-) | sort -u | sed 's/^/whitelist_from /'  > /etc/spamassassin/whitelist.cf.new
+) | sort -u | sed 's/^/whitelist_from /'  > /data/cache/spamassassin/whitelist.cf.temp
 
-mv -f /etc/spamassassin/whitelist.cf.new /etc/spamassassin/whitelist.cf
+mv -f /data/cache/spamassassin/whitelist.cf.temp /data/cache/spamassassin/whitelist.cf
 
 service spamassassin reload
 
