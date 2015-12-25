@@ -471,6 +471,9 @@ security-check()
 	test -d /data/config/opendkim/SigningTable || touch /data/config/opendkim/SigningTable
 	test -d /data/config/opendkim/TrustedHosts || echo -e "127.0.0.1\nlocalhost" > /data/config/opendkim/TrustedHosts
 
+	# must exists
+	test -e /etc/spamassassin/whitelist.cf || touch /etc/spamassassin/whitelist.cf
+
 	chown vmail: /data/vmail /data/cache/spamassassin/bayes_db
 	# because spamd need access too
 	chmod 777 /data/cache/spamassassin/bayes_db

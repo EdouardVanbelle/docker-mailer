@@ -1,0 +1,47 @@
+#!/bin/bash
+
+EMAIL_PATERN='[a-z0-9_.=/-]+@([a-z0-9-]+\.)+[a-z]{2,}'
+
+roundcube-contacts()
+{
+        test -e /data/cache/roundcube/db.sqlite && \
+                sqlite3 /data/cache/roundcube/db.sqlite 'SELECT email FROM contacts WHERE email != "";' | \
+                tr ',' '\n/' | \
+                grep -oEi $EMAIL_PATERN | \
+                tr "A-Z" "a-z"
+}
+
+managed-domains()
+{
+        manage domain-list | sed 's/^/*@/'
+}
+
+sent-mail()
+{
+        # get all users
+        for USER in $(manage user-list)
+        do
+                # get all Sent mails
+                doveadm search -u $USER mailbox Sent SENTSINCE 52weeks| while read guid uid
+                do
+                        # pick To: Cc: Bcc: headers
+                        doveadm fetch -u $USER "hdr" mailbox-guid $guid uid $uid | \
+                                grep -Ei '^(To|Cc|Bcc):' | \
+                                grep -oEi $EMAIL_PATERN | \
+                                tr "A-Z" "a-z"
+                done
+        done
+
+}
+
+
+(
+        roundcube-contacts
+        managed-domains
+        sent-mail
+) | sort -u | sed 's/^/whitelist_from /'  > /etc/spamassassin/whitelist.cf.new
+
+mv -f /etc/spamassassin/whitelist.cf.new /etc/spamassassin/whitelist.cf
+
+service spamassassin reload
+
