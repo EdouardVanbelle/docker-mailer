@@ -31,10 +31,11 @@ do
         fi
 
 
-        # expunge 1 month old Junk
+        # expunge 1 month old Junk 
+	# Important: prefer 'savedbefore' rather 'before'
 	for BOX in Junk Trash
 	do
-		QUERY="mailbox $BOX before 31days"
+		QUERY="mailbox $BOX savedbefore 31days"
 		echo "$USER: expunging old $BOX mails"
 		if [ -z $TEST ]
 		then
@@ -45,7 +46,13 @@ do
 	done
 
         ## expunge 2 month old Unsure
-        #echo doveadm expunge -u $USER mailbox Unsure savedbefore 62days
+	QUERY="mailbox Unsure savedbefore 62days"
+	if [ -z $TEST ]
+	then
+        	doveadm expunge -u $USER $QUERY
+	else
+		doveadm search -u $USER $QUERY
+	fi
 
         echo
 done
