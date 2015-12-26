@@ -37,6 +37,7 @@ ADD etc/dovecot/conf.d/	 	  	/etc/dovecot/conf.d/
 ADD etc/dovecot/sieve/	 	  	/etc/dovecot/sieve/
 ADD etc/dovecot/virtual-template/	/etc/dovecot/virtual-template/
 ADD etc/cron.hourly/auto-whitelist	/etc/cron.hourly/auto-whitelist
+ADD etc/cron.daily/dovecot-archive	/etc/cron.daily/dovecot-archive
 
 # mails should be at least persistant...
 VOLUME /data
