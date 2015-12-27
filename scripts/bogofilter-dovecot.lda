@@ -1,11 +1,39 @@
 #!/bin/bash
 
-# get latest argument
-RECIPIENT=${@: -1}
+# reading arguments without altering "$@"
+# sample of use with postfix: dovecot-lda -f ${sender} -a ${recipient} -d ${user}@${nexthop}
+# more informations: http://wiki.dovecot.org/LDAA :
+# -d <username>: Destination username
+# -a <address>: Original envelope recipient address (e.g. user+ext@domain)
+# -f <address>: Envelope sender address
+# -m <mailbox>: Destination mailbox (default is INBOX). If the mailbox doesn't exist, it will not be created (fallback is INBOX)
+for (( i=${#BASH_ARGV[@]}-1; i>0; i-- ))
+do
+        ARG=${BASH_ARGV[$i]}
+        case $ARG in
+                -d)
+                        ((i--))
+                        DELIVER_TO=${BASH_ARGV[$i]}
+                        ;;
+                -f)
+                        ((i--))
+                        FROM=${BASH_ARGV[$i]}
+                        ;;
+                -a)
+                        ((i--))
+                        ORIGINAL_ADDRESS=${BASH_ARGV[$i]}
+                        ;;
+                -m)
+                        ((i--))
+                        MAILBOX=${BASH_ARGV[$i]}
+                        ;;
+
+        esac
+done
 
 # split it with @
-USER=${RECIPIENT%@*}
-DOMAIN=${RECIPIENT#*@}
+USER=${DELIVER_TO%@*}
+DOMAIN=${DELIVER_TO#*@}
 
 # bogofilter database
 WORKDIR=/data/vmail/$DOMAIN/$USER
