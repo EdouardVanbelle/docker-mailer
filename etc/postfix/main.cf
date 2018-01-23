@@ -80,7 +80,7 @@ policy-spf_time_limit = 3600s
 smtpd_client_restrictions = permit_mynetworks,
         permit_sasl_authenticated,
         reject_unauth_destination,
-	reject_unknown_reverse_client_hostname,
+        reject_unknown_client_hostname,
         reject_rbl_client zen.spamhaus.org,
         reject_rbl_client bl.spamcop.net,
         reject_rbl_client cbl.abuseat.org,
