@@ -527,13 +527,18 @@ security-check()
 
 	# FIXME: please check it
 	chown postfix:root     /var/spool/postfix/{active,bounce,corrupt,defer,deferred,flush,hold,incoming,private,public,saved,trace}
-	chown postfix:postdrop /var/spool/postfix/{maildrop,private}
+	chown postfix:postdrop /var/spool/postfix/{maildrop,public}
 	chown postfix:postfix  /var/spool/postfix/{defer,deferred,public}/*
 	chown postfix:postfix  /var/spool/postfix/private/*
 	chown postfix:vmail    /var/spool/postfix/private/auth
 	rm -rf /var/spool/postfix/lib/*
 	rm -rf /var/spool/postfix/etc/*
 	rm -rf /var/spool/postfix/pid/*
+
+	for S in /etc/dovecot/sieve/*.sieve
+	do 
+		sievec $S
+	done
 
 	
 }
