@@ -531,8 +531,8 @@ security-check()
 	chown postfix:postfix  /var/spool/postfix/{defer,deferred,public}/*
 	chown postfix:postfix  /var/spool/postfix/private/*
 	chown postfix:vmail    /var/spool/postfix/private/auth
-	rm -rf /var/spool/postfix/lib/*
-	rm -rf /var/spool/postfix/etc/*
+	#rm -rf /var/spool/postfix/lib/*
+	#rm -rf /var/spool/postfix/etc/*
 	rm -rf /var/spool/postfix/pid/*
 
 	for S in /etc/dovecot/sieve/*.sieve
