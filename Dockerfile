@@ -1,15 +1,16 @@
-FROM debian:jessie
+FROM debian:stretch
 
 MAINTAINER Edouard Vanbelle <edouard@vanbelle.fr>
 
 RUN \
 	apt-get update \
 	&& DEBIAN_FRONTEND=noninteractive apt-get install -q -y \
-		ca-certificates dnsutils netcat \
+		apt-utils procps less vim ca-certificates dnsutils netcat \
 		openssl rsyslog sqlite3 \
 		postfix opendkim opendkim-tools postfix-policyd-spf-python \
 		spamassassin spamc bogofilter \
 		dovecot-common dovecot-imapd dovecot-sqlite dovecot-antispam dovecot-sieve dovecot-managesieved \
+		certbot \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
