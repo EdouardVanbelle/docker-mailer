@@ -43,6 +43,8 @@ inet_interfaces = all
 
 # Don't accept mail from domains that don't exist.
 smtpd_sender_restrictions = permit
+#FIXME: is following ling better ?
+#smtpd_sender_restrictions = reject_sender_login_mismatch, permit
 
 # Mail thats not for us gets filtered out by smtpd_relay_restrictions
 # When the mail is for us, we just accept everything. (could add spam blocklists/user checking etc. here)
@@ -59,6 +61,7 @@ alias_database = hash:/etc/aliases
 virtual_mailbox_domains = /data/config/virtual-mailbox-domains
 virtual_mailbox_maps = hash:/data/config/virtual-mailbox-maps
 virtual_alias_maps = hash:/data/config/virtual-alias-maps
+smtpd_sender_login_maps = hash:/data/config/virtual-alias-maps
 
 #dovecot
 virtual_transport = dovecot
@@ -84,12 +87,13 @@ smtpd_client_restrictions = permit_mynetworks,
         reject_rbl_client zen.spamhaus.org,
         reject_rbl_client bl.spamcop.net,
         reject_rbl_client cbl.abuseat.org,
-        check_policy_service unix:private/policy-spf
-	check_recipient_access hash:/data/config/recipient_rules
+        check_policy_service unix:private/policy-spf,
+	check_recipient_access hash:/data/config/recipient_rules,
         permit
 
 milter_protocol = 2
 milter_default_action = accept
 
 smtpd_milters = inet:localhost:12031
-# no need to DKIM check for local: non_smtpd_milters = inet:localhost:12031
+non_smtpd_milters = inet:localhost:12031
+# no need to DKIM check for local: 
