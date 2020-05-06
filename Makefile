@@ -1,5 +1,5 @@
 DOCKER=my-mailer
-LOCAL=/home
+LOCAL=/data-active
 INSTANCE="${DOCKER}-instance"
 
 all: build

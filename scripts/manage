@@ -599,6 +599,12 @@ shift
 case $VERB in
 
 
+	inspect)
+		debian_chroot=DOCKER
+		export debian_chroot
+		exec /bin/bash
+		;;
+
 	domain-list|user-list|remap|status|_run|shell)
 	# no param
 		$VERB

@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM debian:buster
 
 MAINTAINER Edouard Vanbelle <edouard@vanbelle.fr>
 
