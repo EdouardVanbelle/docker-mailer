@@ -32,6 +32,7 @@ do
 
 
         # expunge 1 month old Junk 
+	# XXX: will now use autoexpunge in configuration
 	# Important: prefer 'savedbefore' rather 'before'
 	for BOX in Junk Trash
 	do
@@ -46,6 +47,7 @@ do
 	done
 
         ## expunge 2 month old Unsure
+	# XXX: will now use autoexpunge in configuration
 	echo "$USER: expunging old Unsure mails"
 	QUERY="mailbox Unsure savedbefore 62days"
 	if [ -z $TEST ]
