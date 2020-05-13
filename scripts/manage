@@ -421,11 +421,11 @@ user-password()
 }
 
 
-
 remap()
 {
-	for map in /data/config/virtual-sender-login-maps /data/config/virtual-mailbox-maps /data/config/virtual-alias-maps
+	for map in /data/config/*-maps 
 	do
+		echo building map file for $map
 		postmap $map
 	done
 }
@@ -574,6 +574,9 @@ _init()
 _run()
 {
 	_init
+
+	# be security remap all maps
+	remap
 
 	if [ -s /data/config/passwd ] 
 	then
