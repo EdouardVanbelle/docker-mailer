@@ -580,7 +580,7 @@ _run()
 
 	if [ -s /data/config/passwd ] 
 	then
-		tail -F /var/log/messages
+		tail -F /data/log/mail/mail.log
 	fi
 }
 

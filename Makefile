@@ -9,7 +9,7 @@ all: build
 
 # build image
 build:
-	docker build -t dropz-one/${DOCKER} .
+	docker build --pull -t dropz-one/${DOCKER} .
 
 #create container
 container: 

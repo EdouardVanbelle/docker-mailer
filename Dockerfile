@@ -3,7 +3,9 @@ FROM debian:buster
 MAINTAINER Edouard Vanbelle <edouard@vanbelle.fr>
 
 RUN \
-	apt-get update \
+	echo "LANG=C" > /etc/default/locale \
+	&& apt-get update \
+	&& DEBIAN_FRONTEND=noninteractive apt-get upgrade -q -y \
 	&& DEBIAN_FRONTEND=noninteractive apt-get install -q -y \
 		apt-utils procps less vim ca-certificates dnsutils netcat \
 		openssl rsyslog sqlite3 \
@@ -12,6 +14,7 @@ RUN \
 		dovecot-common dovecot-imapd dovecot-sqlite dovecot-antispam dovecot-sieve dovecot-managesieved \
 		certbot \
 	&& apt-get clean \
+	&& apt-get autoclean \
 	&& rm -rf /var/lib/apt/lists/*
 
 # /etc/my-mailer is a stupid marker for manage.sh to check if it is inside container
@@ -19,6 +22,7 @@ RUN	mkdir /data && \
 	mkdir /data/cache && \
 	groupadd -g 5000 vmail && \
 	useradd -g vmail -u 5000 vmail -d /data/vmail -m && \
+	ln -s /data/log/mail/mail.log /var/log/syslog && \
 	touch /etc/my-mailer
 
 ADD scripts/manage 			/usr/local/bin/manage
