@@ -514,16 +514,25 @@ security-check()
 	if [ -e /data/config/hostname ]
 	then
 		SERVER_HOSTNAME=$(cat /data/config/hostname)
-		CERT_HOSTNAME=$(openssl x509 -noout -in /data/config/ssl/default.pem -subject | sed 's/.*\/CN=//; s/\/.*//;')
+                #CERT_HOSTNAME=$(openssl x509 -noout -in /data/config/ssl/default.pem -subject | sed 's/.*\/CN=//; s/\/.*//;')
+                CERT_HOSTNAMES=$(openssl x509 -noout -in /data/config/ssl/default.pem -text | grep DNS: | sed 's/^ \+DNS://g; s/, DNS:/ /g')
 
-		if [ "$CERT_HOSTNAME" != "$SERVER_HOSTNAME" ]
-		then
-			echo "WARNING: /data/config/ssl/default.pem belongs to $CERT_HOSTNAME, which differs from $SERVER_HOSTNAME"
-		fi
+                FOUND=0
+                for CERT_HOSTNAME in $CERT_HOSTNAMES
+                do
+                        if [ "$CERT_HOSTNAME" == "$SERVER_HOSTNAME" ]
+                        then
+                                FOUND=1
+                        fi
+                done
 
-		# write out mailname
-		echo $SERVER_HOSTNAME > /etc/mailname
-	fi
+                if [ $FOUND == 0 ]
+                then
+                        echo "WARNING: /data/config/ssl/default.pem belongs to $CERT_HOSTNAMES, which differs from $SERVER_HOSTNAME" >&2
+                fi
+                # write out mailname
+                echo $SERVER_HOSTNAME > /etc/mailname
+        fi
 
 	# FIXME: please check it
 	chown postfix:root     /var/spool/postfix/{active,bounce,corrupt,defer,deferred,flush,hold,incoming,private,public,saved,trace}
@@ -574,6 +583,13 @@ _init()
 _run()
 {
 	_init
+
+	if [ -n "$TZ" -a -e "/usr/share/zoneinfo/$TZ" ]
+	then
+		ln -sf "/usr/share/zoneinfo/$TZ" /etc/localtime
+		dpkg-reconfigure -f noninteractive tzdata
+	fi
+
 
 	# be security remap all maps
 	remap
