@@ -1,0 +1,4 @@
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+0 */12 * * * root if [ -e /data/letsencrypt/daemon-restart-needed ]; then postfix reload; doveadm reload; rm -f /data/letsencrypt/daemon-restart-needed; fi

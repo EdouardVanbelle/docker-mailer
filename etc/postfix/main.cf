@@ -22,8 +22,8 @@ append_dot_mydomain = no
 readme_directory = no
 
 # TLS parameters
-smtpd_tls_cert_file=/data/config/ssl/default.pem
-smtpd_tls_key_file=/data/config/ssl/default.key
+smtpd_tls_cert_file=/data/config/ssl/fullchain.pem
+smtpd_tls_key_file=/data/config/ssl/privkey.pem
 smtpd_use_tls=yes
 smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
 smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache

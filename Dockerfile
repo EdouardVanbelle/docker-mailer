@@ -23,6 +23,7 @@ RUN	mkdir /data && \
 	groupadd -g 5000 vmail && \
 	useradd -g vmail -u 5000 vmail -d /data/vmail -m && \
 	ln -s /data/log/mail/mail.log /var/log/syslog && \
+	rm -f /etc/cron.d/certbot && \
 	touch /etc/my-mailer
 
 ADD scripts/manage 			/usr/local/bin/manage
@@ -43,6 +44,7 @@ ADD etc/dovecot/sieve/	 	  	/etc/dovecot/sieve/
 ADD etc/dovecot/virtual-template/	/etc/dovecot/virtual-template/
 ADD etc/cron.hourly/auto-whitelist	/etc/cron.hourly/auto-whitelist
 ADD etc/cron.daily/dovecot-archive	/etc/cron.daily/dovecot-archive
+ADD etc/cron.d/ssl-reload		/etc/cron.d/ssl-reload
 
 # mails should be at least persistant...
 VOLUME /data
