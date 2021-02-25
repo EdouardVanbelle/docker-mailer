@@ -44,10 +44,9 @@ compatibility_level=2
 
 inet_interfaces = all
 
-# Don't accept mail from domains that don't exist.
-smtpd_sender_restrictions = permit
-#FIXME: is following ling better ?
-#smtpd_sender_restrictions = reject_sender_login_mismatch, permit
+# Don't accept mail from domains that don't have MX and check if domain is not blacklisted
+smtpd_sender_restrictions = reject_unknown_sender_domain, check_sender_access hash:/data/config/sender_access
+#smtpd_sender_restrictions = permit
 
 # Mail thats not for us gets filtered out by smtpd_relay_restrictions
 # When the mail is for us, we just accept everything. (could add spam blocklists/user checking etc. here)
