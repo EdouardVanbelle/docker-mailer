@@ -1,4 +1,5 @@
 DOCKER=my-mailer
+VERSION=1
 LOCAL=/data-active
 INSTANCE="${DOCKER}-instance"
 LISTEN=`dig +short A mail.vanbelle.fr`
@@ -10,14 +11,14 @@ all: build
 
 # build image
 build:
-	docker build --pull -t dropz-one/${DOCKER} .
+	docker build --pull -t dropz-one/${DOCKER}:${VERSION} .
 
 move:
 	docker container rename ${INSTANCE} ${INSTANCE}.old
 
 #create container
 container: 
-	docker run -t -d -h ${DOCKER} --env TZ=${TIMEZONE} --name "${INSTANCE}" -p ${LISTEN}:25:25 -p ${LISTEN}:143:143 -p ${LISTEN}:587:587 -p ${LISTEN}:4190:4190 -p ${LISTEN}:465:465 -p ${LISTEN}:993:993 -v ${LOCAL}/mail-data:/data -v ${LOCAL}/postfix-spool:/var/spool/postfix dropz-one/${DOCKER}
+	docker run -t -d -h ${DOCKER} --restart=unless-stopped --env TZ=${TIMEZONE} --name "${INSTANCE}" -p ${LISTEN}:25:25 -p ${LISTEN}:143:143 -p ${LISTEN}:587:587 -p ${LISTEN}:4190:4190 -p ${LISTEN}:465:465 -p ${LISTEN}:993:993 -v ${LOCAL}/mail-data:/data -v ${LOCAL}/postfix-spool:/var/spool/postfix dropz-one/${DOCKER}:${VERSION}
 	docker network connect web-net ${INSTANCE}
 
 start:
