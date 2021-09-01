@@ -582,14 +582,15 @@ _init()
 
 _run()
 {
-	_init
-
+	# ensure timezone is defined before starting daemons
 	if [ -n "$TZ" -a -e "/usr/share/zoneinfo/$TZ" ]
 	then
 		ln -sf "/usr/share/zoneinfo/$TZ" /etc/localtime
 		dpkg-reconfigure -f noninteractive tzdata
 	fi
 
+	# will start daemons if necessary
+	_init
 
 	# be security remap all maps
 	remap
