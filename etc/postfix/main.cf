@@ -67,6 +67,7 @@ smtpd_sender_login_maps = hash:/data/config/virtual-alias-maps
 
 #dovecot
 virtual_transport = dovecot
+# will help to generate X-Original-To header (also add O flag in master.conf for that)
 dovecot_destination_recipient_limit = 1
 
 # got 20 sec to send data
@@ -93,9 +94,11 @@ smtpd_client_restrictions = permit_mynetworks,
 	check_recipient_access hash:/data/config/recipient-rules-maps,
         permit
 
-milter_protocol = 2
+milter_protocol = 6
 milter_default_action = accept
 
 smtpd_milters = inet:localhost:12031
 non_smtpd_milters = inet:localhost:12031
-# no need to DKIM check for local: 
+# no need to DKIM check for local
+
+
