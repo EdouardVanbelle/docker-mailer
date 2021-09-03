@@ -69,6 +69,7 @@ smtpd_sender_login_maps = hash:/data/config/virtual-alias-maps
 virtual_transport = dovecot
 # will help to generate X-Original-To header (also add O flag in master.conf for that)
 dovecot_destination_recipient_limit = 1
+#spamassassin_recipient_limit = 1
 
 # got 20 sec to send data
 # TODO smtpd_timeout = 30s

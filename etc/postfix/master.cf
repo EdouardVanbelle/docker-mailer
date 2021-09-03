@@ -169,5 +169,5 @@ dovecot   unix  -       n       n       -       -       pipe
 #  flags=DRhu user=vmail:vmail argv=/usr/lib/dovecot/deliver -f ${sender} -d ${recipient}
 
 spamassassin unix -     n       n       -       -       pipe
-  user=debian-spamd argv=/usr/bin/spamc -f -e  /usr/sbin/sendmail -oi -f ${sender} ${recipient}
+  flags=Rq user=debian-spamd argv=/usr/bin/spamc -f -e  /usr/sbin/sendmail -oi -f ${sender} ${original_recipient}
 
