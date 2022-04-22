@@ -18,8 +18,11 @@ move:
 
 #create container
 container: 
-	docker run -t -d -h ${DOCKER} --restart=unless-stopped --env TZ=${TIMEZONE} --name "${INSTANCE}" -p ${LISTEN}:25:25 -p ${LISTEN}:143:143 -p ${LISTEN}:587:587 -p ${LISTEN}:4190:4190 -p ${LISTEN}:465:465 -p ${LISTEN}:993:993 -v ${LOCAL}/mail-data:/data -v ${LOCAL}/postfix-spool:/var/spool/postfix dropz-one/${DOCKER}:${VERSION}
-	docker network connect web-net ${INSTANCE}
+	docker run -t -d -h ${DOCKER} --restart=unless-stopped --env TZ=${TIMEZONE} --name "${INSTANCE}" \
+		-p ${LISTEN}:25:25 -p ${LISTEN}:143:143 -p ${LISTEN}:587:587 -p ${LISTEN}:4190:4190 -p ${LISTEN}:465:465 -p ${LISTEN}:993:993 \
+		-v ${LOCAL}/mail-data:/data \
+		-v ${LOCAL}/letsencrypt:/letsencrypt:ro \
+		-v ${LOCAL}/postfix-spool:/var/spool/postfix --network web-net dropz-one/${DOCKER}:${VERSION}
 
 start:
 	docker start ${INSTANCE}

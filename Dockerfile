@@ -2,6 +2,10 @@ FROM debian:bullseye
 
 MAINTAINER Edouard Vanbelle <edouard@vanbelle.fr>
 
+# will pickup dovecot from bookworm release (testing)
+#ADD etc/apt-preferences   /etc/apt/preferences.d/00-preferences
+#ADD etc/apt.bookworm.list /etc/apt/sources.list.d/bookworm.list
+
 RUN \
 	echo "LANG=C" > /etc/default/locale \
 	&& apt-get update \
@@ -12,7 +16,7 @@ RUN \
 		postfix opendkim opendkim-tools postfix-policyd-spf-python \
 		spamassassin spamc bogofilter \
 		dovecot-common dovecot-imapd dovecot-sqlite dovecot-antispam dovecot-sieve dovecot-managesieved \
-		certbot \
+		jq \
 	&& apt-get clean \
 	&& apt-get autoclean \
 	&& rm -rf /var/lib/apt/lists/*
@@ -23,7 +27,6 @@ RUN	mkdir /data && \
 	groupadd -g 5000 vmail && \
 	useradd -g vmail -u 5000 vmail -d /data/vmail -m && \
 	ln -s /data/log/mail/mail.log /var/log/syslog && \
-	rm -f /etc/cron.d/certbot && \
 	touch /etc/my-mailer
 
 ADD scripts/manage 			/usr/local/bin/manage
