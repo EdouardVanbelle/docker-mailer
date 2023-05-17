@@ -70,7 +70,7 @@ alias_database = hash:/etc/aliases
 virtual_mailbox_domains = /data/config/virtual-mailbox-domains
 virtual_mailbox_maps = hash:/data/config/virtual-mailbox-maps
 virtual_alias_maps = hash:/data/config/virtual-alias-maps
-smtpd_sender_login_maps = hash:/data/config/virtual-alias-maps
+smtpd_sender_login_maps = hash:/data/config/smtpd-sender-login-maps
 
 #dovecot
 virtual_transport = dovecot
