@@ -572,6 +572,9 @@ _init()
 		SERVER_HOSTNAME=$(cat /data/config/hostname)
 		sed -i "s/^myhostname *=.*/myhostname = ${SERVER_HOSTNAME}/" /etc/postfix/main.cf
 
+		DQS_KEY=$(cat /data/config/dqs_key)
+		sed -i "s/DQS_KEY/$DQS_KEY/" /etc/postfix/main.cf
+
 		start
 		echo "Daemons started"
 	else

@@ -52,7 +52,7 @@ compatibility_level=2
 inet_interfaces = all
 
 # Don't accept mail from domains that don't have MX and check if domain is not blacklisted
-smtpd_sender_restrictions = reject_unknown_sender_domain, check_sender_access hash:/data/config/sender_access
+smtpd_sender_restrictions = reject_unknown_sender_domain, check_sender_access hash:/data/config/sender-access-maps
 #smtpd_sender_restrictions = permit
 
 # Mail thats not for us gets filtered out by smtpd_relay_restrictions
@@ -91,16 +91,24 @@ smtpd_sasl_path = private/auth
 policy-spf_time_limit = 3600s
 
 # for sbl & similar check: http://www.anti-abuse.org/multi-rbl-check/
+# spamhaus doc: https://docs.spamhaus.com/datasets/docs/source/40-real-world-usage/MTAs/020-Postfix.html
+# Use https://blt.spamhaus.com to test you have correctly configured your email stream to use the DNSBLs
 smtpd_client_restrictions = permit_mynetworks,
         permit_sasl_authenticated,
         reject_unauth_destination,
         reject_unknown_client_hostname,
-        reject_rbl_client zen.spamhaus.org,
-        reject_rbl_client bl.spamcop.net,
-        reject_rbl_client cbl.abuseat.org,
+        reject_rbl_client DQS_KEY.zen.dq.spamhaus.net=127.0.0.[2..11],
+        reject_rhsbl_sender DQS_KEY.dbl.dq.spamhaus.net=127.0.1.[2..99],
+        reject_rhsbl_helo DQS_KEY.dbl.dq.spamhaus.net=127.0.1.[2..99],
+        reject_rhsbl_reverse_client DQS_KEY.dbl.dq.spamhaus.net=127.0.1.[2..99],
+        reject_rhsbl_sender DQS_KEY.zrd.dq.spamhaus.net=127.0.2.[2..24],
+        reject_rhsbl_helo DQS_KEY.zrd.dq.spamhaus.net=127.0.2.[2..24],
+        reject_rhsbl_reverse_client DQS_KEY.zrd.dq.spamhaus.net=127.0.2.[2..24],
         check_policy_service unix:private/policy-spf,
 	check_recipient_access hash:/data/config/recipient-rules-maps,
         permit
+
+rbl_reply_maps = hash:/data/config/dnsbl-reply-maps
 
 milter_protocol = 6
 milter_default_action = accept
