@@ -1,17 +1,13 @@
-FROM debian:bullseye
+FROM debian:bookworm
 
 MAINTAINER Edouard Vanbelle <edouard@vanbelle.fr>
-
-# will pickup dovecot from bookworm release (testing)
-#ADD etc/apt-preferences   /etc/apt/preferences.d/00-preferences
-#ADD etc/apt.bookworm.list /etc/apt/sources.list.d/bookworm.list
 
 RUN \
 	echo "LANG=C" > /etc/default/locale \
 	&& apt-get update \
 	&& DEBIAN_FRONTEND=noninteractive apt-get upgrade -q -y \
 	&& DEBIAN_FRONTEND=noninteractive apt-get install -q -y \
-		apt-utils procps less vim ca-certificates dnsutils netcat \
+		apt-utils procps less vim ca-certificates dnsutils netcat-openbsd \
 		openssl rsyslog sqlite3 \
 		postfix opendkim opendkim-tools postfix-policyd-spf-python \
 		spamassassin spamc bogofilter \
@@ -33,7 +29,7 @@ ADD scripts/manage 			/usr/local/bin/manage
 ADD scripts/bogofilter-dovecot.lda 	/usr/local/bin/bogofilter-dovecot.lda
 ADD scripts/antispam-action.wrapper     /usr/local/bin/antispam-action.wrapper
 ADD scripts/dovecot-archive             /usr/local/bin/dovecot-archive
-ADD scripts/auto-whitelist		/usr/local/bin/auto-whitelist
+ADD scripts/auto-welcomelist		/usr/local/bin/auto-welcomelist
 
 ADD etc/rsyslog.conf		  	/etc/rsyslog.conf
 ADD etc/opendkim.conf 		  	/etc/opendkim.conf
@@ -45,7 +41,7 @@ ADD etc/postfix/master.cf 	  	/etc/postfix/master.cf
 ADD etc/dovecot/conf.d/	 	  	/etc/dovecot/conf.d/
 ADD etc/dovecot/sieve/	 	  	/etc/dovecot/sieve/
 ADD etc/dovecot/virtual-template/	/etc/dovecot/virtual-template/
-ADD etc/cron.hourly/auto-whitelist	/etc/cron.hourly/auto-whitelist
+ADD etc/cron.hourly/auto-welcomelist	/etc/cron.hourly/auto-welcomelist
 ADD etc/cron.daily/dovecot-archive	/etc/cron.daily/dovecot-archive
 ADD etc/cron.d/ssl-reload		/etc/cron.d/ssl-reload
 

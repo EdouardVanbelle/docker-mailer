@@ -445,6 +445,9 @@ start()
 	do
 		service $s start
 	done
+
+	# start manually rsyslog (being deprecated on bookworm))
+	rsyslogd -f /etc/rsyslog.conf
 }
 
 reload()
@@ -472,7 +475,9 @@ security-check()
 	test -d /data/config/opendkim/TrustedHosts || echo -e "127.0.0.1\nlocalhost" > /data/config/opendkim/TrustedHosts
 
 	# must exists
-	test -e /data/cache/spamassassin/whitelist.cf || touch /data/cache/spamassassin/whitelist.cf
+	test -e /data/cache/spamassassin/welcomelist.cf || touch /data/cache/spamassassin/welcomelist.cf
+
+	test -e /data/config/dhparam4096.pem || openssl dhparam -out /data/config/dhparam4096.pem 4096
 
 	chown vmail: /data/vmail /data/cache/spamassassin/bayes_db
 	# because spamd need access too

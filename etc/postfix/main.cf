@@ -47,7 +47,7 @@ message_size_limit = 20480000
 recipient_delimiter = +
 
 # remove warning concerning compatibility 
-compatibility_level=2
+compatibility_level=3.6
 
 inet_interfaces = all
 
