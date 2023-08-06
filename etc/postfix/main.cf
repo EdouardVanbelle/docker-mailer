@@ -113,6 +113,7 @@ rbl_reply_maps = hash:/data/config/dnsbl-reply-maps
 milter_protocol = 6
 milter_default_action = accept
 
+# will call opendkim milter
 smtpd_milters = inet:localhost:12031
 non_smtpd_milters = inet:localhost:12031
 # no need to DKIM check for local

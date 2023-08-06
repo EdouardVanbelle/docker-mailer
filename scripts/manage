@@ -100,7 +100,7 @@ dkim-add()
 	chmod 600 /data/config/opendkim/keys/$DOMAIN/$SELECTOR.private
 	chmod 644 /data/config/opendkim/keys/$DOMAIN/$SELECTOR.txt
 
-	echo "$SELECTOR._domainkey.$DOMAIN $DOMAIN:mail:/data/config/opendkim/keys/$DOMAIN/$SELECTOR.private" >> /data/config/opendkim/KeyTable
+	echo "$SELECTOR._domainkey.$DOMAIN $DOMAIN:$SELECTOR:/data/config/opendkim/keys/$DOMAIN/$SELECTOR.private" >> /data/config/opendkim/KeyTable
 	echo "*@$DOMAIN $SELECTOR._domainkey.$DOMAIN" >>/data/config/opendkim/SigningTable
 
 	# don't know if important
@@ -441,13 +441,14 @@ status()
 
 start()
 {
+	# start manually rsyslog (being deprecated on bookworm))
+	rsyslogd -f /etc/rsyslog.conf
+
 	for s in $SERVICES
 	do
 		service $s start
 	done
 
-	# start manually rsyslog (being deprecated on bookworm))
-	rsyslogd -f /etc/rsyslog.conf
 }
 
 reload()
@@ -476,6 +477,9 @@ security-check()
 
 	# must exists
 	test -e /data/cache/spamassassin/welcomelist.cf || touch /data/cache/spamassassin/welcomelist.cf
+
+	# ensure ownership of private keys
+	chown opendkim:opendkim /data/config/opendkim/keys/*/default.private
 
 	test -e /data/config/dhparam4096.pem || openssl dhparam -out /data/config/dhparam4096.pem 4096
 
