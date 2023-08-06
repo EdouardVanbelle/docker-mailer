@@ -59,7 +59,10 @@ EXPOSE 25 587 143 4190 465 993
 # XXX: don't really need imaps nor smtps (TLS is present)
 
 # FIXME: implement it @see: https://dzone.com/articles/health-checking-your-docker-containers
-HEALTHCHECK --interval=60s --timeout=3s CMD openssl s_client -showcerts -starttls smtp -servername mail.vanbelle.fr -connect 127.0.0.1:25 </dev/null >/dev/null
+HEALTHCHECK --interval=60s --timeout=3s \
+	CMD openssl s_client -showcerts -starttls smtp -servername mail.vanbelle.fr -connect 127.0.0.1:25  </dev/null >/dev/null \
+	&&  openssl s_client -showcerts -starttls imap -servername mail.vanbelle.fr -connect 127.0.0.1:143 </dev/null >/dev/null
+	
 
 
 # by default call: /manage.sh _run
