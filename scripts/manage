@@ -14,7 +14,7 @@ fi
 
 
 # XXX: order is important
-SERVICES="cron rsyslog opendkim spamassassin postfix dovecot"
+SERVICES="cron rsyslog opendkim spamd postfix dovecot"
 
 
 STD_CMD="domain-list|user-list|remap|status|shell"
