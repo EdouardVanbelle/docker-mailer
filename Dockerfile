@@ -30,6 +30,7 @@ ADD scripts/bogofilter-dovecot.lda 	/usr/local/bin/bogofilter-dovecot.lda
 ADD scripts/antispam-action.wrapper     /usr/local/bin/antispam-action.wrapper
 ADD scripts/dovecot-archive             /usr/local/bin/dovecot-archive
 ADD scripts/auto-welcomelist		/usr/local/bin/auto-welcomelist
+ADD scripts/rotate			/usr/local/bin/rotate
 
 ADD etc/rsyslog.conf		  	/etc/rsyslog.conf
 ADD etc/opendkim.conf 		  	/etc/opendkim.conf
@@ -43,6 +44,7 @@ ADD etc/dovecot/sieve/	 	  	/etc/dovecot/sieve/
 ADD etc/dovecot/virtual-template/	/etc/dovecot/virtual-template/
 ADD etc/cron.hourly/auto-welcomelist	/etc/cron.hourly/auto-welcomelist
 ADD etc/cron.daily/dovecot-archive	/etc/cron.daily/dovecot-archive
+ADD etc/cron.weekly/rotate		/etc/cron.weekly/rotate
 ADD etc/cron.d/ssl-reload		/etc/cron.d/ssl-reload
 
 # mails should be at least persistant...

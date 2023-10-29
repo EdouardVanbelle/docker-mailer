@@ -1,0 +1,25 @@
+#!/bin/bash
+
+FILE=/data/log/mail/mail.log
+
+test -e /.dockerenv || { echo "must be runned in docker container"; exit 1; }
+test -e $FILE       || { echo "$FILE not found"; exit 1; }
+
+NOW=$(date +'%Y-%m-%d')
+
+if test -e $FILE.$NOW.gz
+then
+        echo $FILE.$NOW.gz already exists
+        exit 1
+fi
+
+if test -e $FILE.$NOW
+then
+        echo $FILE.$NOW already exists
+        exit 1
+fi
+
+mv $FILE $FILE.$NOW
+kill -HUP $(cat /var/run/rsyslogd.pid)
+gzip -9 $FILE.$NOW
+
