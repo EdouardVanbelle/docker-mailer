@@ -21,6 +21,9 @@ append_dot_mydomain = no
 
 readme_directory = no
 
+# grow up line entries, due to AUTH OAUTHBEARER > 2048
+line_length_limit = 4096
+
 # TLS parameters
 smtpd_tls_cert_file=/data/config/ssl/fullchain.pem
 smtpd_tls_key_file=/data/config/ssl/privkey.pem
@@ -34,6 +37,19 @@ smtpd_tls_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
 smtp_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
 smtp_tls_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
 
+# accept TLS from any client
+smtpd_tls_security_level = may
+# already default value: smtpd_tls_session_cache_timeout = 3600s
+# already default value: tls_random_source = dev:/dev/urandom
+
+smtpd_tls_loglevel = 1
+
+
+# use tls connection on outgoing email
+smtp_use_tls = yes
+
+# save tls in header
+smtpd_tls_received_header = yes
 
 # See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
 # information on enabling SSL in the smtp client.
@@ -105,7 +121,7 @@ smtpd_client_restrictions = permit_mynetworks,
         reject_rhsbl_helo DQS_KEY.zrd.dq.spamhaus.net=127.0.2.[2..24],
         reject_rhsbl_reverse_client DQS_KEY.zrd.dq.spamhaus.net=127.0.2.[2..24],
         check_policy_service unix:private/policy-spf,
-	check_recipient_access hash:/data/config/recipient-rules-maps,
+        check_recipient_access hash:/data/config/recipient-rules-maps,
         permit
 
 rbl_reply_maps = hash:/data/config/dnsbl-reply-maps
